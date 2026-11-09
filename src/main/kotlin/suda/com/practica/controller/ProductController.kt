@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import suda.com.practica.model.Product
+import suda.com.practica.model.primary.Product
 import suda.com.practica.service.ProductService
 import java.net.URI
 
@@ -18,12 +18,12 @@ import java.net.URI
 class ProductController(
     private val productService: ProductService
 ) {
-    // GET /productos — lista todos los productos
+    // GET /productos — lista todos (DB primaria)
     @GetMapping
     fun listar(): ResponseEntity<List<Product>> =
         ResponseEntity.ok(productService.listarProductos())
 
-    // GET /productos/{id} — busca un producto por id
+    // GET /productos/{id}
     @GetMapping("/{id}")
     fun buscar(@PathVariable id: Int): ResponseEntity<Product> {
         val product = productService.buscarProducto(id)
@@ -31,30 +31,25 @@ class ProductController(
         return ResponseEntity.ok(product)
     }
 
-    // POST /productos — crea un nuevo producto
+    // POST /productos
     @PostMapping
     fun crear(@RequestBody product: Product): ResponseEntity<Product> {
         val guardado = productService.guardarProducto(product)
-        return ResponseEntity
-            .created(URI.create("/productos/${guardado.id}"))
-            .body(guardado)
+        return ResponseEntity.created(URI.create("/productos/${guardado.id}")).body(guardado)
     }
 
-    // PUT /productos/{id} — actualiza un producto existente
+    // PUT /productos/{id}
     @PutMapping("/{id}")
     fun actualizar(@PathVariable id: Int, @RequestBody product: Product): ResponseEntity<Product> {
-        productService.buscarProducto(id)
-            ?: return ResponseEntity.notFound().build()
+        productService.buscarProducto(id) ?: return ResponseEntity.notFound().build()
         product.id = id
-        val actualizado = productService.guardarProducto(product)
-        return ResponseEntity.ok(actualizado)
+        return ResponseEntity.ok(productService.guardarProducto(product))
     }
 
-    // DELETE /productos/{id} — elimina un producto
+    // DELETE /productos/{id}
     @DeleteMapping("/{id}")
     fun eliminar(@PathVariable id: Int): ResponseEntity<Void> {
-        productService.buscarProducto(id)
-            ?: return ResponseEntity.notFound().build()
+        productService.buscarProducto(id) ?: return ResponseEntity.notFound().build()
         productService.eliminarProducto(id)
         return ResponseEntity.noContent().build()
     }

@@ -1,4 +1,4 @@
-package suda.com.practica.model
+package suda.com.practica.model.primary
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity

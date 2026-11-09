@@ -1,8 +1,8 @@
 package suda.com.practica.service
 
 import org.springframework.stereotype.Service
-import suda.com.practica.model.Product
-import suda.com.practica.repository.ProductRepository
+import suda.com.practica.model.primary.Product
+import suda.com.practica.repository.primary.ProductRepository
 
 @Service
 class ProductService(
